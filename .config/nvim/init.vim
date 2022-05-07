@@ -5,7 +5,7 @@ set expandtab
 set mouse=a
 set clipboard+=unnamedplus
 set scrolloff=4 " keep first and last n lines visable while scrollin while scrolling
-set list lcs=tab:\|\ " mark tab indentations with vertical lines  
+set list lcs=tab:\|\ " mark tab indentations with vertical lines
 set linebreak "  wrap long lines at a character in 'breakat'
 " Splits open at the bottom and right, which is non-retarded, unlike vim defaults.
   set splitbelow splitright
@@ -17,6 +17,33 @@ set noshowmode
 " no search highlighting
   " set nohlsearch
 "
+
+" Shortcutting split navigation, saving a keypress:
+	map <C-h> <C-w>h
+	map <C-j> <C-w>j
+	map <C-k> <C-w>k
+	map <C-l> <C-w>l
+
+" Automatically deletes all trailing whitespace and newlines at end of file on save.
+	autocmd BufWritePre * %s/\s\+$//e
+	autocmd BufWritePre * %s/\n\+\%$//e
+	autocmd BufWritePre *.[ch] %s/\%$/\r/e
+
+" Save file as sudo on files that require root permission
+	cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
+
+" Replace all is aliased to S.
+	nnoremap S :%s//g<Left><Left>
+
+" Compile document, be it groff/LaTeX/markdown/etc.
+	map <leader>c :w! \| !compiler "<c-r>%"<CR>
+
+" Open corresponding .pdf/.html or preview
+	map <leader>p :!opout <c-r>%<CR><CR>
+
+" Runs a script that cleans out tex build files whenever I close out of a .tex file.
+	autocmd VimLeave *.tex !texclear %
+
 " ---------- Spell-checks ----------
 " add spellfile path to runtimepath (bug fix)
 set rtp+=$HOME/.local/share/nvim/site/spell
@@ -30,7 +57,7 @@ set rtp+=$HOME/.local/share/nvim/site/spell
 	map <leader>oh :setlocal spell! spelllang=hu<CR>
 
 
-" Installs vim-plug if it does not yet exist 
+" Installs vim-plug if it does not yet exist
 if ! filereadable(system('echo -n "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/autoload/plug.vim"'))
 	echo "Downloading junegunn/vim-plug to manage plugins..."
 	silent !mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/nvim/autoload/
@@ -45,7 +72,7 @@ call plug#begin(system('echo -n "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/plugged"
 Plug 'sheerun/vim-polyglot' " synthax highlighting and indentation support
 Plug 'tpope/vim-commentary' " comment lines in various languages
 Plug 'psliwka/vim-smoothie' " smoother vim scrolling
-" Plug 'Yggdroot/indentLine' " mark code indented with spaces for each indentation level 
+" Plug 'Yggdroot/indentLine' " mark code indented with spaces for each indentation level
 Plug 'ghifarit53/tokyonight-vim' " colortheme originally for VS Code
 Plug 'vim-airline/vim-airline' " status bar
 Plug 'neoclide/coc.nvim', {'branch': 'release'} " color hexcode and colors
@@ -54,12 +81,27 @@ Plug 'preservim/tagbar'
 Plug 'vimwiki/vimwiki'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
+Plug 'alvan/vim-closetag'
 " Plug 'tpope/vim-surround'
 " Plug 'preservim/nerdtree'
 " Plug 'junegunn/goyo.vim'
+Plug 'psf/black', { 'branch': 'main' }
+Plug 'fisadev/vim-isort'
 " Plug 'jreybert/vimagit'
 " Plug 'lukesmithxyz/vimling'
 call plug#end()
+
+
+" This triggers all formatting before coc linter is triggered
+aug python
+    au!
+    autocmd BufWritePre *.py Isort
+    autocmd BufWritePre *.py Black
+aug END
+
+" Future plugins:
+"  vim emmet (html boilerplate code)
+
 
 " ---------- Colorscheme ----------
 
@@ -92,11 +134,22 @@ let g:vimwiki_list = [{'path': '~/sync/vimwiki/',
                       \ 'syntax': 'markdown', 'ext': '.md'}]
 
 
+" ---------- vim-closetag ----------
+
+" filenames like *.xml, *.html, *.xhtml, ...
+" These are the file extensions where this plugin is enabled.
+"
+let g:closetag_filenames = '*.html,*.xhtml,*.phtml'
+
+" filenames like *.xml, *.xhtml, ...
+" This will make the list of non-closing tags self-closing in the specified files.
+"
+let g:closetag_xhtml_filenames = '*.xhtml,*.jsx'
 
 " ---------- Visibility ----------
 
-" let g:vim_json_syntax_conceal = 0 
-" let g:vim_markdown_conceal = 0 
+" let g:vim_json_syntax_conceal = 0
+" let g:vim_markdown_conceal = 0
 " let g:vim_markdown_conceal_code_blocks = 0
 
 
@@ -105,15 +158,25 @@ let g:vimwiki_list = [{'path': '~/sync/vimwiki/',
 
 " coc config
 let g:coc_global_extensions = [
-  \ 'coc-prettier', 
+  \ 'coc-sh',
+  \ 'coc-tsserver',
+  \ 'coc-prettier',
   \ 'coc-pyright',
   \ 'coc-pairs',
+  \ 'coc-snippets',
+  \ 'coc-word',
+  \ 'coc-json',
+  \ 'coc-eslint',
   \ ]
-  " \ 'coc-tsserver',
-  " \ 'coc-snippets',
-  " \ 'coc-eslint', 
-  " \ 'coc-json', 
 
+" vim-prettier
+"let g:prettier#quickfix_enabled = 0
+"let g:prettier#quickfix_auto_focus = 0
+" prettier command for coc
+command! -nargs=0 Prettier :CocCommand prettier.formatFile
+" run prettier on save
+"let g:prettier#autoformat = 0
+"autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html PrettierAsync
 
 " " Set internal encoding of vim, not needed on neovim, since coc.nvim using some
 " " unicode characters in the file autoload/float.vim
@@ -166,10 +229,10 @@ else
   inoremap <silent><expr> <c-@> coc#refresh()
 endif
 
-" " Make <CR> auto-select the first completion item and notify coc.nvim to
-" " format on enter, <cr> could be remapped by other vim plugin
-" inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-"                               \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+" Make <CR> auto-select the first completion item and notify coc.nvim to
+" format on enter, <cr> could be remapped by other vim plugin
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 " " Use `[g` and `]g` to navigate diagnostics
 " " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
@@ -287,4 +350,3 @@ nmap <leader>rn <Plug>(coc-rename)
 "
 "
 "
-

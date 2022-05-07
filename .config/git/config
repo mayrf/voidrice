@@ -1,0 +1,5 @@
+[user]
+	email = f.mayr@hotmail.com
+	name = Fritz Mayr
+[commit]
+	template = ~/.git/.gitmessage
