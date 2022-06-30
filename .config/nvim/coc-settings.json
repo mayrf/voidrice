@@ -1,0 +1,18 @@
+{
+  "eslint.autoFixOnSave": true,
+  "python.formatting.provider": "black",
+  "coc.preferences.formatOnSaveFiletypes": [
+    "*",
+    "python",
+    "javascript",
+    "typescript",
+    "typescrptreact",
+    "json",
+    "javascript",
+    "javascriptreact",
+    "typescript.tsx",
+    "graphql",
+    "html",
+    "css"
+  ]
+}
