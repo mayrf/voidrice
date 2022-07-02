@@ -1,0 +1,3 @@
+#!/bin/sh
+
+xdg-open "$(find -type f | fzf)"
