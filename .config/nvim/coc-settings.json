@@ -1,6 +1,8 @@
 {
   "eslint.autoFixOnSave": true,
   "python.formatting.provider": "black",
+  "python.sortImports.path": "/usr/bin/isort",
+  "pyright.enable": true,
   "coc.preferences.formatOnSaveFiletypes": [
     "*",
     "python",
@@ -13,6 +15,7 @@
     "typescript.tsx",
     "graphql",
     "html",
-    "css"
+    "css",
+    "markdown"
   ]
 }
