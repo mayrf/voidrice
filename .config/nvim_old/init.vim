@@ -26,7 +26,30 @@ Plug 'psf/black', { 'branch': 'main' }
 Plug 'fisadev/vim-isort'
 " Plug 'jreybert/vimagit'
 
+" Jupyter Setup
+" https://www.maxwellrules.com/misc/nvim_jupyter.html
+Plug 'untitled-ai/jupyter_ascending.vim'
+Plug 'hkupty/iron.nvim'
+Plug 'kana/vim-textobj-user'
+Plug 'kana/vim-textobj-line'
+Plug 'GCBallesteros/vim-textobj-hydrogen'
+Plug 'GCBallesteros/jupytext.vim'
+
 call plug#end()
+
+" Jupytext
+let g:jupytext_fmt = 'py'
+let g:jupytext_style = 'hydrogen'
+nmap <space><space>x <Plug>JupyterExecute
+nmap <space><space>X <Plug>JupyterExecuteAll
+
+" Send cell to IronRepl and move to next cell.
+" Depends on the text object defined in vim-textobj-hydrogen
+" You first need to be connected to IronRepl
+nmap ]x ctrih/^# %%<CR><CR>
+
+luafile $HOME/.config/nvim/plugins.lua
+
 
 " ---------- Colorscheme ----------
 
@@ -55,6 +78,7 @@ set title
 set ignorecase
 set smartcase
 set noshowmode
+set updatetime=100 " set updatetime of gitgutter update
 " no search highlighting
   " set nohlsearch
 "
