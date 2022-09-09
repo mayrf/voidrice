@@ -94,3 +94,8 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
+export NVM_DIR="$HOME/.config/nvm"
+source /usr/share/nvm/init-nvm.sh
+
+# aliases
+alias py38="source /home/mayrf/Documents/ve/3pn38/bin/activate"
